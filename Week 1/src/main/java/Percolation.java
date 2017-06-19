@@ -15,6 +15,9 @@ public class Percolation {
 
     public Percolation(int n) {
         // create n-by-n grid, with all sites blocked
+        if (n<= 0){
+            throw new java.lang.IllegalArgumentException("Grid size should be more then 0!");
+        }
         size = n;
         model = new WeightedQuickUnionUF(size*size + 2);
         openSites = new int [size*size];
@@ -31,6 +34,7 @@ public class Percolation {
 
     public    void open(int row, int col)  {
         // open site (row, col) if it is not open already
+        validateBounds(row, col);
         int sitePosition = sitePosition(row, col);
         if (isOpen(row, col)) return;
         openSites[sitePosition] = 1;
@@ -58,11 +62,18 @@ public class Percolation {
 
     public boolean isOpen(int row, int col) {
         // is site (row, col) open?
+        validateBounds(row, col);
         return openSites[sitePosition(row,col)]!=0;
     }
     public boolean isFull(int row, int col) {
         // is site (row, col) full?
+        validateBounds(row, col);
         return model.connected(sitePosition(row, col),fakeTop );
+    }
+    private void validateBounds(int row, int col){
+        if (row <=0 || row >size || col <= 0 || col > size){
+            throw new IndexOutOfBoundsException("Row or column index is out of bound!");
+        }
     }
 
     public     int numberOfOpenSites() {
@@ -82,7 +93,6 @@ public class Percolation {
         while (!model.percolates()){
             model.open(StdRandom.uniform(1, size+1), StdRandom.uniform(1,size+1));
         }
-        System.out.println("finished");
         System.out.println(model.numberOfOpenSites());
     }
 
