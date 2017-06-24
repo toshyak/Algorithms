@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a169b10d-109e-425d-b649-511a614ee84f" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main/resources/algs4.jar" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Percolation.iml" afterPath="$PROJECT_DIR$/Percolation.iml" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -535,7 +533,14 @@
       <option name="project" value="LOCAL" />
       <updated>1497904545434</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Move algs4.jar library to common Resources folder">
+      <created>1498295013068</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1498295013068</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -573,7 +578,8 @@
     <MESSAGE value="Percolation realization with simple test in main()&#10;&#10;+add algs4.jar to dependencies" />
     <MESSAGE value="Add check for corner cases" />
     <MESSAGE value="Add PercolationStats and reformat code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add PercolationStats and reformat code" />
+    <MESSAGE value="Move algs4.jar library to common Resources folder" />
+    <option name="LAST_COMMIT_MESSAGE" value="Move algs4.jar library to common Resources folder" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
