@@ -55,9 +55,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
         int rand = StdRandom.uniform(size);
         Item item = queue[rand];
-        queue[rand] = null;
+        queue[rand] = queue[size - 1];
+        queue[size - 1] = null;
         size--;
-        if (size > 0 && capacity > size / 4) {
+        if (size > 0 && capacity > 4 * size) {
             resize(capacity / 2);
         }
         return item;
@@ -89,10 +90,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
 
         public Item next() {
-            if (shuffledQueue.length < position) {
+            if (shuffledQueue.length - 1 < position) {
                 throw new java.util.NoSuchElementException("No more elements in queue!");
             }
-            return queue[position++];
+            return queue[shuffledQueue[position++]];
         }
 
         public void remove() {
@@ -105,12 +106,17 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         RandomizedQueue<Integer> queue = new RandomizedQueue<Integer>();
         queue.enqueue(10);
         queue.enqueue(50);
+        queue.enqueue(60);
+        queue.enqueue(70);
+        queue.enqueue(80);
         System.out.println(queue.dequeue());
-        for (int i : queue) {
-            System.out.println(i);
-        }
+//        for (int i : queue) {
+//            System.out.println(i);
+//        }
         System.out.println(queue.dequeue());
         queue.enqueue(100);
+        System.out.println(queue.dequeue());
+        System.out.println(queue.dequeue());
         System.out.println(queue.dequeue());
     }
 }
