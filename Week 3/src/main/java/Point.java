@@ -8,8 +8,10 @@
  *
  ******************************************************************************/
 
-import java.util.Comparator;
 import edu.princeton.cs.algs4.StdDraw;
+import edu.princeton.cs.algs4.StdOut;
+
+import java.util.Comparator;
 
 public class Point implements Comparable<Point> {
 
@@ -19,8 +21,8 @@ public class Point implements Comparable<Point> {
     /**
      * Initializes a new point.
      *
-     * @param  x the <em>x</em>-coordinate of the point
-     * @param  y the <em>y</em>-coordinate of the point
+     * @param x the <em>x</em>-coordinate of the point
+     * @param y the <em>y</em>-coordinate of the point
      */
     public Point(int x, int y) {
         /* DO NOT MODIFY */
@@ -55,11 +57,17 @@ public class Point implements Comparable<Point> {
      * Double.POSITIVE_INFINITY if the line segment is vertical;
      * and Double.NEGATIVE_INFINITY if (x0, y0) and (x1, y1) are equal.
      *
-     * @param  that the other point
+     * @param that the other point
      * @return the slope between this point and the specified point
      */
     public double slopeTo(Point that) {
-        /* YOUR CODE HERE */
+        if (compareTo(that) == 0) {
+            return Double.NEGATIVE_INFINITY;
+        } else if (this.x == that.x) {
+            return Double.POSITIVE_INFINITY;
+        } else {
+            return (double) (that.y - this.y) / (that.x - this.x);
+        }
     }
 
     /**
@@ -67,15 +75,19 @@ public class Point implements Comparable<Point> {
      * Formally, the invoking point (x0, y0) is less than the argument point
      * (x1, y1) if and only if either y0 < y1 or if y0 = y1 and x0 < x1.
      *
-     * @param  that the other point
+     * @param that the other point
      * @return the value <tt>0</tt> if this point is equal to the argument
-     *         point (x0 = x1 and y0 = y1);
-     *         a negative integer if this point is less than the argument
-     *         point; and a positive integer if this point is greater than the
-     *         argument point
+     * point (x0 = x1 and y0 = y1);
+     * a negative integer if this point is less than the argument
+     * point; and a positive integer if this point is greater than the
+     * argument point
      */
     public int compareTo(Point that) {
-        /* YOUR CODE HERE */
+        if (this.y < that.y || (this.y == that.y && this.x < that.x)) {
+            return -1;
+        } else if (this.y == that.y && this.x == that.x) {
+            return 0;
+        } else return +1;
     }
 
     /**
@@ -85,9 +97,19 @@ public class Point implements Comparable<Point> {
      * @return the Comparator that defines this ordering on points
      */
     public Comparator<Point> slopeOrder() {
-        /* YOUR CODE HERE */
+        return new SlopeOrder();
     }
 
+    public class SlopeOrder implements Comparator<Point> {
+
+        public int compare(Point o1, Point o2) {
+            if (Point.this.slopeTo(o1) - Point.this.slopeTo(o2) > 0) {
+                return 1;
+            } else if (Point.this.slopeTo(o1) == Point.this.slopeTo(o2)) {
+                return 0;
+            } else return -1;
+        }
+    }
 
     /**
      * Returns a string representation of this point.
@@ -106,5 +128,40 @@ public class Point implements Comparable<Point> {
      */
     public static void main(String[] args) {
         /* YOUR CODE HERE */
+
+        // read the n points from a file
+//        In in = new In(args[0]);
+//        int n = in.readInt();
+        Point[] points = new Point[8];
+        points[0] = new Point(10000, 0);
+        points[1] = new Point(0, 10000);
+        points[2] = new Point(3000, 7000);
+        points[3] = new Point(7000, 3000);
+        points[4] = new Point(20000, 21000);
+        points[5] = new Point(3000, 4000);
+        points[6] = new Point(14000, 15000);
+        points[7] = new Point(6000, 7000);
+//        for (int i = 0; i < n; i++) {
+//            int x = in.readInt();
+//            int y = in.readInt();
+//            points[i] = new Point(x, y);
+//        }
+
+        // draw the points
+//        StdDraw.enableDoubleBuffering();
+//        StdDraw.setXscale(0, 32768);
+//        StdDraw.setYscale(0, 32768);
+//        for (Point p : points) {
+//            p.draw();
+//        }
+//        StdDraw.show();
+
+        // print and draw the line segments
+        BruteCollinearPoints collinear = new BruteCollinearPoints(points);
+        for (LineSegment segment : collinear.segments()) {
+            StdOut.println(segment);
+//            segment.draw();
+        }
+//        StdDraw.show();
     }
 }
