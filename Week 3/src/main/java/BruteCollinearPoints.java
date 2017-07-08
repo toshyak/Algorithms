@@ -16,9 +16,9 @@ public class BruteCollinearPoints {
         if (points == null) {
             throw new IllegalArgumentException("Input array cannot be null!");
         }
-        int p, q, r, s;
-        if (points.length < 4) return;
-
+        for (Point p : points) {
+            if (p == null) throw new IllegalArgumentException("Points cannot be null!");
+        }
         allPoints = new ArrayList<Point>(Arrays.asList(points));
         Collections.sort(allPoints);
         Point check = null;
@@ -31,6 +31,7 @@ public class BruteCollinearPoints {
                 check = test;
             }
         }
+        int p, q, r, s;
         check = null;
         for (p = 0; p < points.length - 3; p++) {
             if (points[p] == null) {
