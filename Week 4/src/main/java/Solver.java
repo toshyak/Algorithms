@@ -1,26 +1,101 @@
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
-import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Stack;
+
 
 /**
  * Created by Alexey on 11.07.2017.
  */
 public class Solver {
     private int moves = 0;
-    private Stack<Board> solution;
+    private ArrayList<Board> solution = new ArrayList<>();
 
     public Solver(Board initial) {
         // find a solution to the initial board (using the A* algorithm)
-        MinPQ<Board> pq = new MinPQ<>();
-        pq.insert(initial);
+        SearchNode initialNode = new SearchNode(initial, 0, null, false);
+        MinPQ<SearchNode> pq = new MinPQ<>(initialNode.manhattan());
+        pq.insert(initialNode);
+        pq.insert(new SearchNode(initial.twin(), 0, null, true));
+        boolean found = Boolean.FALSE;
+        SearchNode currentNode = null;
+        while (!found) {
+            currentNode = pq.delMin();
+            if (!currentNode.board.isGoal()) {
+                moves++;
+                for (Board b : currentNode.board.neighbors()) {
+                    if (currentNode.parentNode == null || !b.equals(currentNode.parentNode.board)) {
+                        pq.insert(new SearchNode(b, moves, currentNode, currentNode.isTwin));
+                    }
+                }
+            } else found = Boolean.TRUE;
+        }
+        if (!currentNode.isTwin) {
+            Stack<Board> stack = new Stack();
+            while (currentNode != null) {
+                stack.push(currentNode.board);
+                currentNode = currentNode.parentNode;
+            }
+            while (!stack.empty()) {
+                solution.add(stack.pop());
+            }
+        }
+    }
 
+    private class SearchNode {
+        private Board board;
+        private SearchNode parentNode;
+        private int moves;
+        private boolean isTwin;
+
+        private SearchNode(Board board, int moves, SearchNode parentNode, boolean isTwin) {
+            this.board = board;
+            this.moves = moves;
+            this.parentNode = parentNode;
+            this.isTwin = isTwin;
+        }
+
+        private int hammingPriority() {
+            return this.board.hamming() + moves;
+        }
+
+        private int manhattanPriority() {
+            return this.board.manhattan() + moves;
+        }
+
+        private Comparator<SearchNode> hamming() {
+            return new hammingComparator();
+        }
+
+        private Comparator<SearchNode> manhattan() {
+            return new manhattanComparator();
+        }
+
+        public class hammingComparator implements Comparator<SearchNode> {
+            @Override
+            public int compare(SearchNode node1, SearchNode node2) {
+                if (node1.hammingPriority() == node2.hammingPriority()) return 0;
+                else if (node1.hammingPriority() > node2.hammingPriority()) return 1;
+                else return -1;
+            }
+        }
+
+        public class manhattanComparator implements Comparator<SearchNode> {
+            @Override
+            public int compare(SearchNode node1, SearchNode node2) {
+                if (node1.manhattanPriority() == node2.manhattanPriority()) return 0;
+                else if (node1.manhattanPriority() > node2.manhattanPriority()) return 1;
+                else return -1;
+            }
+        }
     }
 
     public boolean isSolvable() {
         // is the initial board solvable?
-        if (solution() != null) return true;
-        else return false;
+        return solution() != null;
     }
 
     public int moves() {
@@ -35,6 +110,7 @@ public class Solver {
 
     public static void main(String[] args) {
         // create initial board from file
+        System.out.println(args[0]);
         In in = new In(args[0]);
         int n = in.readInt();
         int[][] blocks = new int[n][n];

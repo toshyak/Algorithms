@@ -118,9 +118,7 @@ public class Board {
         s.append(this.dimension() + "\n");
         for (int[] row : board) {
             for (int column : row) {
-                if (column == 0) {
-                    s.append("  ");
-                } else s.append(column + " ");
+                s.append(column + " ");
             }
             s.append("\n");
         }
