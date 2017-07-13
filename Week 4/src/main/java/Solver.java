@@ -12,10 +12,11 @@ import java.util.Stack;
  */
 public class Solver {
     private int moves = 0;
-    private ArrayList<Board> solution = new ArrayList<>();
+    private ArrayList<Board> solution = null;
 
     public Solver(Board initial) {
         // find a solution to the initial board (using the A* algorithm)
+        if (initial == null) throw new IllegalArgumentException("Argument cannot be null!");
         SearchNode initialNode = new SearchNode(initial, 0, null, false);
         MinPQ<SearchNode> pq = new MinPQ<>(initialNode.manhattan());
         pq.insert(initialNode);
@@ -25,16 +26,17 @@ public class Solver {
         while (!found) {
             currentNode = pq.delMin();
             if (!currentNode.board.isGoal()) {
-                moves++;
                 for (Board b : currentNode.board.neighbors()) {
                     if (currentNode.parentNode == null || !b.equals(currentNode.parentNode.board)) {
-                        pq.insert(new SearchNode(b, moves, currentNode, currentNode.isTwin));
+                        pq.insert(new SearchNode(b, currentNode.moves + 1, currentNode, currentNode.isTwin));
                     }
                 }
             } else found = Boolean.TRUE;
         }
         if (!currentNode.isTwin) {
-            Stack<Board> stack = new Stack();
+            moves = currentNode.moves;
+            solution = new ArrayList<>();
+            Stack<Board> stack = new Stack<Board>();
             while (currentNode != null) {
                 stack.push(currentNode.board);
                 currentNode = currentNode.parentNode;
@@ -58,30 +60,30 @@ public class Solver {
             this.isTwin = isTwin;
         }
 
-        private int hammingPriority() {
-            return this.board.hamming() + moves;
-        }
+//        private int hammingPriority() {
+//            return this.board.hamming() + moves;
+//        }
 
         private int manhattanPriority() {
             return this.board.manhattan() + moves;
         }
 
-        private Comparator<SearchNode> hamming() {
-            return new hammingComparator();
-        }
+//        private Comparator<SearchNode> hamming() {
+//            return new hammingComparator();
+//        }
 
         private Comparator<SearchNode> manhattan() {
             return new manhattanComparator();
         }
 
-        public class hammingComparator implements Comparator<SearchNode> {
-            @Override
-            public int compare(SearchNode node1, SearchNode node2) {
-                if (node1.hammingPriority() == node2.hammingPriority()) return 0;
-                else if (node1.hammingPriority() > node2.hammingPriority()) return 1;
-                else return -1;
-            }
-        }
+//        public class hammingComparator implements Comparator<SearchNode> {
+//            @Override
+//            public int compare(SearchNode node1, SearchNode node2) {
+//                if (node1.hammingPriority() == node2.hammingPriority()) return 0;
+//                else if (node1.hammingPriority() > node2.hammingPriority()) return 1;
+//                else return -1;
+//            }
+//        }
 
         public class manhattanComparator implements Comparator<SearchNode> {
             @Override
@@ -100,7 +102,8 @@ public class Solver {
 
     public int moves() {
         // min number of moves to solve initial board; -1 if unsolvable
-        return moves;
+        if (isSolvable()) return moves;
+        else return -1;
     }
 
     public Iterable<Board> solution() {

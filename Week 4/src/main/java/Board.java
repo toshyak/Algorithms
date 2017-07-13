@@ -11,7 +11,11 @@ public class Board {
     public Board(int[][] blocks) {
         // construct a board from an n-by-n array of blocks
         // (where blocks[i][j] = block in row i, column j)
-        board = Arrays.copyOf(blocks, blocks.length);
+        board = new int[blocks.length][];
+        for (int i = 0; i < blocks.length; i++) {
+            board[i] = Arrays.copyOf(blocks[i], blocks[i].length);
+        }
+
     }
 
     public int dimension() {
@@ -59,7 +63,10 @@ public class Board {
 
     public Board twin() {
         // a board that is obtained by exchanging any pair of blocks
-        int[][] twinBoard = Arrays.copyOf(board, dimension());
+        int[][] twinBoard = new int[dimension()][];
+        for (int i = 0; i < board.length; i++) {
+            twinBoard[i] = Arrays.copyOf(board[i], board[i].length);
+        }
         if (twinBoard[0][0] == 0 || twinBoard[0][1] == 0) {
             int exch = twinBoard[1][0];
             twinBoard[1][0] = twinBoard[1][1];
